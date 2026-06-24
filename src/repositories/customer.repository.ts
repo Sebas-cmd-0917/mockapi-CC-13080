@@ -1,6 +1,5 @@
-import { supabase } from '../config/supabase';
+import { pool } from '../config/database';
 
-// Interfaz para tipado estricto
 export interface CustomerData {
   nit: string;
   name: string;
@@ -8,26 +7,17 @@ export interface CustomerData {
 }
 
 export const findByNit = async (nit: string) => {
-  const { data, error } = await supabase
-    .from('customers')
-    .select('*')
-    .eq('nit', nit)
-    .single();
-
-  // Supabase lanza un error si no encuentra filas (código PGRST116), lo manejamos devolviendo null
-  if (error && error.code === 'PGRST116') return null;
-  if (error) throw error;
-  
-  return data;
+  const { rows } = await pool.query<CustomerData & { id: string; created_at: string }>(
+    'SELECT * FROM customers WHERE nit = $1',
+    [nit]
+  );
+  return rows[0] ?? null;
 };
 
 export const create = async (customer: CustomerData) => {
-  const { data, error } = await supabase
-    .from('customers')
-    .insert([customer])
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
+  const { rows } = await pool.query(
+    'INSERT INTO customers (nit, name, phone) VALUES ($1, $2, $3) RETURNING *',
+    [customer.nit, customer.name, customer.phone ?? null]
+  );
+  return rows[0];
 };
