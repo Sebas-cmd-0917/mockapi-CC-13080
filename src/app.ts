@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import { simulateNetworkDelay } from './middlewares/delay';
 import authRoutes from './routes/auth.routes';
 import customerRoutes from './routes/customer.routes';
-import itemRoutes from './routes/item.routes';
+import productRoutes from './routes/product.routes';
 import invoiceRoutes from './routes/invoice.routes';
 
 dotenv.config();
@@ -21,7 +21,7 @@ app.get('/health', (req: Request, res: Response) => {
 
 app.use('/auth', authRoutes);
 app.use('/customers', customerRoutes);
-app.use('/items', itemRoutes);
+app.use('/products', productRoutes);
 app.use('/invoices', invoiceRoutes);
 
 export default app;

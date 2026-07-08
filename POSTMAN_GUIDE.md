@@ -24,7 +24,7 @@
 1. Health Check
 2. Auth → Login          ← guarda el token automáticamente
 3. POST /customers       ← crea el cliente
-4. POST /items (x2)      ← crea los productos
+4. POST /products (x2)   ← crea los productos
 5. POST /invoices        ← crea la factura
 ```
 
@@ -216,14 +216,38 @@
 
 ---
 
-## 4. Items (Productos)
+## 4. Products (Productos)
 
-### POST /items — Crear producto 1
+### GET /products — Listar productos
+
+| Campo   | Valor                     |
+|---------|---------------------------|
+| Método  | `GET`                     |
+| URL     | `{{base_url}}/products`   |
+| Headers | `Authorization: Bearer {{token}}` |
+
+**Respuesta esperada `200 OK`:**
+```json
+[
+  {
+    "id": "uuid",
+    "code": "PROD-001",
+    "name": "Laptop Dell XPS 15",
+    "price": 4500000,
+    "tax": 19,
+    "created_at": "2026-06-24T..."
+  }
+]
+```
+
+---
+
+### POST /products — Crear producto 1
 
 | Campo   | Valor                     |
 |---------|---------------------------|
 | Método  | `POST`                    |
-| URL     | `{{base_url}}/items`      |
+| URL     | `{{base_url}}/products`   |
 | Headers | `Authorization: Bearer {{token}}` · `Content-Type: application/json` |
 
 **Body (raw JSON):**
@@ -250,7 +274,7 @@
 
 ---
 
-### POST /items — Crear producto 2
+### POST /products — Crear producto 2
 
 ```json
 {
@@ -275,7 +299,7 @@
 
 ---
 
-### POST /items — Error: código duplicado
+### POST /products — Error: código duplicado
 
 ```json
 {
@@ -291,14 +315,14 @@
 {
   "error": {
     "code": "DUPLICATE_CODE",
-    "details": ["Item with code 'PROD-001' already exists"]
+    "details": ["Product with code 'PROD-001' already exists"]
   }
 }
 ```
 
 ---
 
-### POST /items — Error: validación Zod (precio negativo)
+### POST /products — Error: validación Zod (precio negativo)
 
 ```json
 {
@@ -321,7 +345,7 @@
 
 ---
 
-### POST /items — Error: validación Zod (campos faltantes)
+### POST /products — Error: validación Zod (campos faltantes)
 
 ```json
 {
@@ -345,12 +369,12 @@
 
 ---
 
-### GET /items/:code — Obtener producto
+### GET /products/:code — Obtener producto
 
 | Campo | Valor                             |
 |-------|-----------------------------------|
 | Método | `GET`                            |
-| URL   | `{{base_url}}/items/PROD-001`     |
+| URL   | `{{base_url}}/products/PROD-001`  |
 | Headers | `Authorization: Bearer {{token}}` |
 
 **Respuesta esperada `200 OK`:**
@@ -367,9 +391,9 @@
 
 ---
 
-### GET /items/:code — Error: no encontrado
+### GET /products/:code — Error: no encontrado
 
-| URL | `{{base_url}}/items/PROD-999` |
+| URL | `{{base_url}}/products/PROD-999` |
 |---|---|
 
 **Respuesta esperada `404 Not Found`:**
@@ -377,7 +401,7 @@
 {
   "error": {
     "code": "NOT_FOUND",
-    "details": ["Item with code 'PROD-999' not found"]
+    "details": ["Product with code 'PROD-999' not found"]
   }
 }
 ```
@@ -582,8 +606,9 @@
 | Auth      | POST   | `/auth`                  | No   | Login → obtiene JWT      |
 | Customers | POST   | `/customers`             | Sí   | Crear cliente            |
 | Customers | GET    | `/customers/:nit`        | Sí   | Buscar cliente por NIT   |
-| Items     | POST   | `/items`                 | Sí   | Crear producto           |
-| Items     | GET    | `/items/:code`           | Sí   | Buscar producto por código |
+| Products  | GET    | `/products`              | Sí   | Listar productos         |
+| Products  | POST   | `/products`              | Sí   | Crear producto            |
+| Products  | GET    | `/products/:code`        | Sí   | Buscar producto por código |
 | Invoices  | POST   | `/invoices`              | Sí   | Crear factura            |
 
 > **Header de autenticación requerido en todos los endpoints marcados con "Sí":**  

@@ -1,5 +1,5 @@
 import * as invoiceRepository from '../repositories/invoice.repository';
-import * as itemRepository from '../repositories/item.repository';
+import * as productRepository from '../repositories/product.repository';
 import * as customerRepository from '../repositories/customer.repository';
 
 export interface InvoiceItemInput {
@@ -34,7 +34,7 @@ export const createInvoice = async (input: CreateInvoiceInput) => {
 
   // Validate all items exist in a single batch query
   const codes = input.items.map((i) => i.item_code);
-  const foundItems = await itemRepository.findManyByCodes(codes);
+  const foundItems = await productRepository.findManyByCodes(codes);
   const foundCodeSet = new Set(foundItems.map((i) => i.code));
 
   const missingCodes = codes.filter((c) => !foundCodeSet.has(c));
